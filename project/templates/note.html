@@ -1,0 +1,38 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+
+{% block title %}
+Новость
+{% endblock title %}
+
+{% block content %}
+    <h1>Новости на портале</h1>
+    <hr>
+        <table>
+            <tr>
+                <td>
+                    Название
+                </td>
+                <td>
+                    Дата публикации
+                </td>
+                <td>
+                    Описание
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{ note.title|censor }}
+                </td>
+                <td>
+                    {{ note.dateCreation|date:'d-M-Y h:m' }}
+                </td>
+
+                <td>
+                    {{ note.text|censor }}
+                </td>
+            </tr>
+        </table>
+
+{% endblock content %}
