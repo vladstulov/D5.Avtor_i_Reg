@@ -26,12 +26,6 @@ class NewsList(ListView):
             form.save()
 
         return super().get(request, *args, **kwargs)
-    # def get_context_data(self, **kwargs):  # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (привет, полиморфизм, мы скучали!!!)
-    #     context = super().get_context_data(**kwargs)
-    #     context['filter'] = NewsFilter(self.request.GET, queryset=self.get_queryset())  # вписываем наш фильтр в контекст
-    #     return context
-
-
 
 class NewsSearchList(ListView):
     model = News  # указываем модель, объекты которой мы будем выводить
