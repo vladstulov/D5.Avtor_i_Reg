@@ -41,9 +41,14 @@ News
             </tr>
         {% for note in news %}
             <tr>
+                
                 <td>
-                    {{ note.title|censor }}
+                    <a href="{% url 'note' note.id %}">{{ note.title|censor }}</a> &emsp; &emsp; &emsp; &emsp;
+                    <a href="{% url 'newsEdit' note.id %}"><u>Редактировать</u></a> &emsp;   
+                    <a href="{% url 'newsDelete' note.id %}"><u> Удалить </u></a> <BR>
+
                 </td>
+                    
                 <td>
                     {{ note.dateCreation|date:'d M Y' }}
                 </td>
