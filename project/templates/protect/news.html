@@ -1,0 +1,108 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %} <!-- не забываем заранее загружать наши фильтры! -->
+
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+
+<h2>Страница авторизованного пользователя <em>{{request.user.username}}</em></h2>
+
+
+<button> <a href="sign/logout/">Выйти</a> </button>
+
+{% if is_not_authors %}
+<p align="right"><button> <a href="sign/upgrade/"> Стать автором </a> </button></p>
+{% endif %}
+<p align="right"><button> <a href="news/search"> Поиск </a> </button></p>
+    <h1>Новости на портале</h1>
+    <hr>
+    {% if news %} <!-- Если есть заметки, то выводим таблицу с ними -->
+    <i>Количество заметок на портале: &nbsp;   <b>{{ news|length }}</b></i><BR><BR>
+
+
+    {% else %}
+        <h2>Заметок на портале нет!</h2>
+    {% endif %}
+
+
+
+
+<!-- Перед таблицей добавим форму для поиска -->
+
+
+        <table>
+            <tr>
+                <td>
+                    <b> Название </b>
+                </td>
+                <td>
+                    <b> Дата публикации </b>
+                </td>
+                <td>
+                    <b> Описание </b>
+                </td>
+                <td>
+                    <b> Автор </b>
+                </td>
+            </tr>
+        {% for note in news %}
+            <tr>
+                
+
+                {% if is_not_authors %}
+                <td>
+                    <a href="{% url 'note' note.id %}">{{ note.title|censor }}</a><BR><BR>
+                </td>
+                {% else %}
+                <td>
+                    <a href="{% url 'note' note.id %}">{{ note.title|censor }}</a>
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <a href="{% url 'newsEdit' note.id %}"><i> Редактировать</i></a>
+                    <a href="{% url 'newsDelete' note.id %}"> <i>Удалить </i> </a> <BR>&emsp;
+                </td>
+                {% endif %}
+                <td>
+                    {{ note.dateCreation|date:'d M Y' }}
+                </td>
+
+                <td>
+                    {{ note.text|truncatechars:77|censor }} <!-- дописываем специальный фильтр, чтобы ограничить количество символов до 20. Все остальные символы превратятся в многоточие. -->
+                </td>
+                <td>
+                    {{ note.author }}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+{% if is_paginated %}
+
+    <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+{% endif %}
+
+
+{% endblock content %}
+
